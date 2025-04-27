@@ -13,6 +13,7 @@ Este proyecto es un reto para construir una aplicación full-stack (Backend + Fr
 - [Estructura del Proyecto](#estructura-del-proyecto)
 - [Lista de Tareas (To-Do)](#lista-de-tareas-to-do)
 - [Notas Adicionales](#notas-adicionales)
+- [Documentación de API Externa](#documentación-de-api-externa)
 
 ## Descripción
 
@@ -243,6 +244,49 @@ Para poner en marcha la aplicación, necesitarás ejecutar tanto el backend como
 - [ ] Optimizar imágenes
 - [ ] Mejorar tiempo de carga inicial
 
-```
+## Documentación de API Externa
 
-```
+### API Factus
+
+La aplicación se integra con la API de Factus. Puedes encontrar la documentación oficial en:
+
+- 🔗 [Documentación Factus](https://developers.factus.com.co/)
+
+#### Endpoints Principales de Factus
+
+- **Autenticación**:
+
+  - OAuth 2.0
+  - Tokens JWT
+  - Renovación automática
+
+- **Facturación**:
+  - Crear facturas electrónicas
+  - Consultar facturas
+  - Actualizar estados
+  - Anular documentos
+
+#### Consideraciones Importantes
+
+- 🔑 Requisitos de autenticación:
+
+  - Client ID
+  - Client Secret
+  - Credenciales de usuario
+
+- ⚠️ Límites de API:
+
+  - Consultar documentación para rate limits
+  - Manejar throttling
+  - Implementar caché cuando sea posible
+
+- 🔒 Seguridad:
+  - Usar HTTPS
+  - No exponer credenciales
+  - Validar respuestas
+
+### Recursos Adicionales
+
+- [Sandbox Factus](https://sandbox.factus.com.co)
+- [Centro de Ayuda](https://ayuda.factus.com.co)
+- [Estado de la API](https://status.factus.com.co)
