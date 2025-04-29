@@ -1,113 +1,106 @@
-import User from '../models/user.model.js'
-import bcrypt from 'bcrypt'
+import { hashPassword, verifyPassword } from '../utils/passwordManager.js'
 import { createAccessToken } from '../libs/jwt.js'
+import User from '../models/user.model.js'
 
-export const register = async (req, res) => {
-  const { username, email, password } = req.body
-
+export async function register(req, res) {
   try {
-    const userFound = await User.findOne({ email })
+    const { username, email, password } = req.body
 
-    if (userFound)
+    if (!username || !password || !email) {
+      return res
+        .status(400)
+        .json({ message: 'Username, email y password son requeridos' })
+    }
+
+    // Verificar si el usuario ya existe
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }]
+    })
+
+    if (existingUser) {
       return res.status(400).json({
-        message: ['The email is already in use']
+        message:
+          existingUser.email === email
+            ? 'El correo electrónico ya está registrado'
+            : 'El nombre de usuario ya está en uso'
       })
+    }
 
-    // hashing the password
-    const passwordHash = await bcrypt.hash(password, 10)
-
-    // creating the user
+    const hashedPassword = await hashPassword(password)
     const newUser = new User({
       username,
       email,
-      password: passwordHash
+      password: hashedPassword
     })
 
-    // saving the user in the database
     const userSaved = await newUser.save()
+    const token = await createAccessToken({ id: userSaved._id })
 
-    // create access token
-    const token = await createAccessToken({
-      id: userSaved._id
-    })
-
-    res.cookie('token', token, {
-      httpOnly: process.env.NODE_ENV !== 'development',
-      secure: true,
-      sameSite: 'none'
-    })
-
-    res.json({
+    res.cookie('token', token)
+    res.status(201).json({
       id: userSaved._id,
       username: userSaved.username,
       email: userSaved.email
     })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    console.error('Error detallado en registro:', error)
+    if (error.code === 11000) {
+      return res.status(400).json({
+        message: 'El usuario o correo electrónico ya existe'
+      })
+    }
+    res.status(500).json({
+      message: 'Error en el servidor al registrar el usuario'
+    })
   }
 }
 
-export const login = async (req, res) => {
+export async function login(req, res) {
   try {
-    const { email, password } = req.body
-    const userFound = await User.findOne({ email })
+    const { emailOrUsername, password } = req.body
 
-    if (!userFound)
-      return res.status(400).json({
-        message: ['The email does not exist']
-      })
+    const userFound = await User.findOne({
+      $or: [{ email: emailOrUsername }, { username: emailOrUsername }]
+    })
 
-    const isMatch = await bcrypt.compare(password, userFound.password)
-    if (!isMatch) {
+    if (!userFound) {
       return res.status(400).json({
-        message: ['The password is incorrect']
+        message: 'Usuario no encontrado'
       })
     }
 
-    const token = await createAccessToken({
-      id: userFound._id,
-      username: userFound.username
-    })
+    const isMatch = await verifyPassword(password, userFound.password)
+    if (!isMatch) {
+      return res.status(400).json({
+        message: 'Contraseña incorrecta'
+      })
+    }
+
+    const token = await createAccessToken({ id: userFound._id })
 
     res.cookie('token', token, {
-      httpOnly: process.env.NODE_ENV !== 'development',
-      secure: true,
+      secure: process.env.NODE_ENV === 'production',
+      httpOnly: true,
       sameSite: 'none'
     })
 
-    res.json({
+    res.status(200).json({
       id: userFound._id,
       username: userFound.username,
       email: userFound.email
     })
   } catch (error) {
-    return res.status(500).json({ message: error.message })
+    console.error('Error en login:', error)
+    res.status(500).json({ error: 'Error en el login' })
   }
 }
 
-export const verifyToken = async (req, res) => {
-  const { token } = req.cookies
-  if (!token) return res.send(false)
-
-  jwt.verify(token, TOKEN_SECRET, async (error, user) => {
-    if (error) return res.sendStatus(401)
-
-    const userFound = await User.findById(user.id)
-    if (!userFound) return res.sendStatus(401)
-
-    return res.json({
-      id: userFound._id,
-      username: userFound.username,
-      email: userFound.email
-    })
-  })
-}
-
-export const logout = async (req, res) => {
-  res.cookie('token', '', {
-    httpOnly: true,
-    secure: true,
-    expires: new Date(0)
-  })
-  return res.sendStatus(200)
+export async function logout(req, res) {
+  try {
+    res.cookie('token', '', { expires: new Date(0) })
+    return res.sendStatus(200)
+  } catch (error) {
+    console.error('Error en logout:', error)
+    res.status(500).json({ error: 'Error al cerrar sesión' })
+  }
 }

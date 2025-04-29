@@ -1,10 +1,11 @@
-import { factusAxiosInstance } from '../shared/http/axios-instance'
+import { factusAxiosInstance } from '../shared/http/axios-instance.js'
 import {
   createTokenRequestData,
   createRefreshTokenRequestData
-} from '../shared/utils/token.utils'
-import { FACTUS_CONFIG } from '../shared/config/constants'
+} from '../shared/utils/token.utils.js'
+import { FACTUS_CONFIG } from '../shared/config/constants.js'
 import dotenv from 'dotenv'
+import axios from 'axios'
 
 dotenv.config()
 
@@ -17,33 +18,38 @@ const {
   FACTUS_API_URL
 } = process.env
 
+const authClient = axios.create({
+  baseURL: FACTUS_CONFIG.API_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
 /**
  * Obtiene el token de acceso usando las credenciales configuradas
  * @returns {Promise<Object>} Tokens de acceso y actualización
  */
 export const getFactusToken = async () => {
   try {
-    const data = createTokenRequestData({
-      clientId: FACTUS_CLIENT_ID,
-      clientSecret: FACTUS_CLIENT_SECRET,
-      username: FACTUS_USERNAME,
-      password: FACTUS_PASSWORD
+    const response = await authClient.post('/oauth/token', {
+      grant_type: 'password',
+      username: FACTUS_CONFIG.USERNAME,
+      password: FACTUS_CONFIG.PASSWORD,
+      client_id: FACTUS_CONFIG.CLIENT_ID,
+      client_secret: FACTUS_CONFIG.CLIENT_SECRET
     })
-
-    const response = await factusAxiosInstance.post(
-      FACTUS_CONFIG.ENDPOINTS.TOKEN,
-      data
-    )
 
     return {
       accessToken: response.data.access_token,
-      refreshToken: response.data.refresh_token,
-      expiresIn: response.data.expires_in
+      expiresIn: response.data.expires_in,
+      tokenType: response.data.token_type
     }
   } catch (error) {
-    throw new Error(
-      error.response?.data?.message || 'Error al obtener token de Factus'
+    console.error(
+      '[Factus] Error de autenticación:',
+      error.response?.data || error.message
     )
+    throw new Error('Error en autenticación Factus')
   }
 }
 

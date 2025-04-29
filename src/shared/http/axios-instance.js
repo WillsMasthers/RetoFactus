@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { FACTUS_CONFIG } from '../config/constants'
+import { FACTUS_CONFIG } from '../config/constants.js'
 
 export const factusAxiosInstance = axios.create({
   baseURL: FACTUS_CONFIG.API_URL,

@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
-import { useAuth } from '../context/AuthContext'
-import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useAuthStore } from '../store/authStore'
 
 function RegisterPage() {
   const {
@@ -9,25 +9,33 @@ function RegisterPage() {
     handleSubmit,
     formState: { errors }
   } = useForm()
-  const { signup, isAuthenticated, errors: RegisterError } = useAuth()
+
+  const signup = useAuthStore((state) => state.signup)
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  const authErrors = useAuthStore((state) => state.errors)
+
   const navigate = useNavigate()
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/tasks')
+      navigate('/login')
     }
   }, [isAuthenticated])
 
   const onSubmit = async (values) => {
-    signup(values)
+    const result = await signup(values)
+    if (!authErrors) {
+      navigate('/login')
+    }
   }
 
   return (
     <section className='bg-zinc-800 max-w-md p-10 rounded-md'>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {RegisterError && (
-          <span className='text-red-500 text-sm'>{RegisterError}</span>
+        {authErrors && (
+          <span className='text-red-500 text-sm'>{authErrors}</span>
         )}
+
         <input
           type='text'
           {...register('username', { required: true })}
@@ -60,9 +68,9 @@ function RegisterPage() {
 
         <button
           type='submit'
-          className='bg-blue-500 text-white px-4 py-2 rounded-md'
+          className='bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md my-2'
         >
-          Registrar
+          Registrarse
         </button>
       </form>
     </section>
