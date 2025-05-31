@@ -1,0 +1,30 @@
+{
+  "iva": {
+    "code": "01",
+    "name": "IVA",
+    "rates": [
+      { "id": "01-19", "code": "01-19", "description": "IVA 19%", "rate": 19 },
+      { "id": "01-05", "code": "01-05", "description": "IVA 5%", "rate": 5 },
+      {
+        "id": "01-EX",
+        "code": "01-EX",
+        "description": "Excluido de IVA",
+        "rate": 0
+      }
+    ]
+  },
+  "retenciones": [
+    {
+      "id": "05-15",
+      "code": "05-15",
+      "description": "Retención IVA 15%",
+      "rate": 15
+    },
+    {
+      "id": "06-07",
+      "code": "06-07",
+      "description": "Retención en la Fuente 7%",
+      "rate": 7
+    }
+  ]
+}

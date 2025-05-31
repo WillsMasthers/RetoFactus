@@ -1,0 +1,103 @@
+{
+  "documentTypes": [
+    {
+      "code": "01",
+      "name": "Factura electrónica de Venta"
+    },
+    {
+      "code": "02",
+      "name": "Nota de Débito"
+    },
+    {
+      "code": "03",
+      "name": "Nota de Crédito"
+    }
+  ],
+  "legalOrganizations": [
+    {
+      "id": 1,
+      "code": "1",
+      "name": "Persona Jurídica"
+    },
+    {
+      "id": 2,
+      "code": "2",
+      "name": "Persona Natural"
+    }
+  ],
+  "paymentForms": [
+    {
+      "code": "1",
+      "name": "Pago de contado"
+    },
+    {
+      "code": "2",
+      "name": "Pago a crédito"
+    }
+  ],
+  "paymentMethods": [
+    {
+      "code": "10",
+      "name": "Efectivo"
+    },
+    {
+      "code": "20",
+      "name": "Tarjeta de crédito"
+    },
+    {
+      "code": "30",
+      "name": "Tarjeta de débito"
+    }
+  ],
+  "unitMeasures": [
+    {
+      "id": 70,
+      "code": "94",
+      "name": "unidad"
+    },
+    {
+      "id": 71,
+      "code": "95",
+      "name": "kilogramo"
+    },
+    {
+      "id": 72,
+      "code": "96",
+      "name": "metro"
+    }
+  ],
+  "standardCodes": [
+    {
+      "id": 1,
+      "code": "999",
+      "name": "Estándar de adopción del contribuyente"
+    }
+  ],
+  "taxes": [
+    {
+      "id": 1,
+      "code": "01",
+      "name": "IVA"
+    },
+    {
+      "id": 2,
+      "code": "02",
+      "name": "IC"
+    },
+    {
+      "id": 3,
+      "code": "03",
+      "name": "ICA"
+    }
+  ],
+  "withholdingTaxes": [
+    {
+      "code": "05",
+      "name": "ReteIVA"
+    },
+    {
+      "code": "06",
+      "name": "ReteRenta"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "logos": [
+    {
+      "id": "logo1",
+      "title": "Logo por defecto",
+      "filename": "Logo.png",
+      "url": "/images/logos/Logo.png"
+    },
+    {
+      "id": "logo2",
+      "title": "Escudo de Norte de Santander",
+      "filename": "Escudo_de_Norte_de_Santander.svg.png",
+      "url": "/images/logos/Escudo_de_Norte_de_Santander.svg.png"
+    },
+    {
+      "id": "logo3",
+      "title": "Logo OIG",
+      "filename": "OIG.jpeg",
+      "url": "/images/logos/OIG.jpeg"
+    }
+  ]
+}

@@ -67,3 +67,7 @@ build/
 
 # Yarn Integrity file
 .yarn-integrity
+
+# Client folder
+/client/
+/client/**/*

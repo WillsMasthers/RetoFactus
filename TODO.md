@@ -47,6 +47,7 @@
 - [ ] Añadir tests de componentes
 - [ ] Optimizar rendimiento de la aplicación
 - [ ] Implementar exportación de datos
+- [ ] Mostrar mensaje de confirmación al registrar un nuevo usuario
 
 ### Documentación
 
