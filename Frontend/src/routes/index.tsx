@@ -13,6 +13,12 @@ const NotFound = lazy(() => import('../pages/NotFound'))
 const Invoices = lazy(() => import('../pages/Invoices'))
 const Sales = lazy(() => import('../pages/Sales'))
 const InvoiceDetails = lazy(() => import('../pages/InvoiceDetails'))
+const Components = lazy(() => import('../pages/Components'))
+const PageTemplate = lazy(() => import('../pages/PageTemplate'))
+const InventoryLayout = lazy(() => import('../layouts/Inventory.Layouts'))
+const ProductsPage = lazy(() => import('../pages/inventory/Products'))
+const CategoriesPage = lazy(() => import('../pages/inventory/Categories'))
+const BrandsPage = lazy(() => import('../pages/inventory/Brands'))
 
 // Configuración de rutas con lazy loading
 const router = createBrowserRouter([
@@ -25,6 +31,24 @@ const router = createBrowserRouter([
     element: (
       <Suspense fallback={<Loading />}>
         <Login />
+      </Suspense>
+    )
+  },
+  {
+    path: '/components',
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Components />
+      </Suspense>
+    )
+  },
+  {
+    path: '/template',
+    element: (
+      <Suspense fallback={<Loading />}>
+        <PageTemplate title="Página de Ejemplo" description="Esta es una página de ejemplo usando el template">
+          <div>Contenido de ejemplo</div>
+        </PageTemplate>
       </Suspense>
     )
   },
@@ -105,6 +129,50 @@ const router = createBrowserRouter([
         <Sales />
       </Suspense>
     )
+  },
+  {
+    path: '/inventory',
+    element: (
+      <ProtectedRoute>
+        <Suspense fallback={<Loading />}>
+          <InventoryLayout />
+        </Suspense>
+      </ProtectedRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ProductsPage />
+          </Suspense>
+        )
+      },
+      {
+        path: 'products',
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ProductsPage />
+          </Suspense>
+        )
+      },
+      {
+        path: 'categories',
+        element: (
+          <Suspense fallback={<Loading />}>
+            <CategoriesPage />
+          </Suspense>
+        )
+      },
+      {
+        path: 'brands',
+        element: (
+          <Suspense fallback={<Loading />}>
+            <BrandsPage />
+          </Suspense>
+        )
+      }
+    ]
   },
   {
     path: '*',

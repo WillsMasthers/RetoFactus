@@ -4,11 +4,13 @@
   "private": true,
   "description": "Sistema de Facturación Electrónica",
   "type": "module",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js",
-    "test": "jest"
+    "start": "node dist/index.js",
+    "dev": "node src/index.js",
+    "build": "tsc",
+    "test": "jest",
+    "init-data": "node src/tests/defaultData.test.js"
   },
   "keywords": [],
   "author": "",
@@ -28,12 +30,16 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^20.11.19",
     "nodemon": "^3.0.3",
     "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3"
   }
 }

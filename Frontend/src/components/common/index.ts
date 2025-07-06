@@ -1,0 +1,8 @@
+export { Input } from './Input'
+export { InputCalendar } from './InputCalendar'
+export { InputDatetime } from './InputDatetime'
+export { InputNumber } from './InputNumber'
+export { InputDecimal } from './InputDecimal'
+export { InputEmail } from './InputEmail'
+export { InputPassword } from './InputPassword'
+export { InputTelefone } from './InputTelefone'

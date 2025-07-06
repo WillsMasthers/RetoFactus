@@ -1,18 +1,43 @@
 import React from "react"
+import { Input, InputNumber, InputDecimal, InputEmail, InputPassword, InputTelefone } from "../common"
+import InputDatetime from "../common/InputDatetime"
+// Importar otros componentes específicos según se creen (EmailInput, PasswordInput, etc.)
 
 interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string
-  onlyNumbers?: boolean
-  required?: boolean
+  // La prop 'type' ahora determinará qué subcomponente renderizar
+  // Puedes añadir otros tipos a la unión aquí según los componentes que crees
+  type?: 'text' | 'email' | 'password' | 'number' | 'decimal' | 'tel' | 'url' | 'date' | 'color'
+  // Las props específicas como onlyNumbers y decimal son manejadas por los subcomponentes especializados
 }
 
-export const InputField = ({ label, id, onlyNumbers, required, ...props }: InputFieldProps) => {
-  // Handler para filtrar solo números si onlyNumbers está activo
-  const handleInput = (e: React.FormEvent<HTMLInputElement>) => {
-    if (onlyNumbers) {
-      e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "")
+export const InputField = ({ label, id, type = 'text', ...props }: InputFieldProps) => {
+  const renderInput = () => {
+    // No necesitamos omitir props aquí, simplemente pasamos todas las props estándar 
+    // y los subcomponentes especializados tomarán solo las que necesiten o ignoren las demás.
+    switch (type) {
+      case 'number':
+        return <InputNumber id={id} {...props} />
+      case 'decimal':
+        return <InputDecimal id={id} {...props} />
+      // Añadir casos para otros tipos especializados aquí
+      case 'email':
+        return <InputEmail id={id} {...props} />
+      case 'password':
+        return <InputPassword id={id} {...props} />
+      case 'tel':
+        return <InputTelefone id={id} type={type} {...props} />
+      case 'url':
+        return <Input id={id} type={type} {...props} />
+      case 'date':
+        return <InputDatetime id={id} format="dd/mm/yyyy 24h" showPicker {...props} />
+      case 'color':
+        return <Input id={id} type={type} {...props} />
+      case 'text':
+      default:
+        // Para el Input base, pasamos todas las props incluyendo type
+        return <Input id={id} type={type} {...props} />
     }
-    if (props.onInput) props.onInput(e)
   }
 
   return (
@@ -23,35 +48,7 @@ export const InputField = ({ label, id, onlyNumbers, required, ...props }: Input
       >
         {label}
       </label>
-      <input
-        id={id}
-        {...props}
-        required={required}
-        onInput={handleInput}
-        className={`
-          w-full
-          rounded-md
-          border
-          border-gray-300
-          dark:border-gray-800
-          bg-white
-          dark:bg-gray-950
-          text-gray-900
-          dark:text-gray-50
-          placeholder-gray-400
-          dark:placeholder-gray-500
-          py-2
-          px-3
-          shadow-xs
-          outline-none
-          focus:ring-2
-          focus:ring-blue-500
-          transition-all
-          sm:text-sm
-          ${props.className || ""}
-        `}
-        placeholder={props.placeholder}
-      />
+      {renderInput()}
     </div>
   )
 } 

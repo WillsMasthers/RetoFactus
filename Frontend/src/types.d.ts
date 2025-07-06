@@ -474,3 +474,215 @@ export interface FacturaResponse {
     debit_notes: DebitNote[]
   }
 }
+
+// ============================================
+// TIPOS PARA GESTIÓN DE INVENTARIO
+// ============================================
+
+/**
+ * Interfaz que representa una marca de producto
+ * @property {string} uuid - Identificador único de la marca
+ * @property {string} name - Nombre de la marca
+ * @property {string} [description] - Descripción opcional de la marca
+ * @property {Object} [informacion] - Información adicional de la marca
+ * @property {string} [informacion.titulo] - Título descriptivo de la marca
+ * @property {string} [informacion.url] - URL relacionada con la marca
+ * @property {string} [informacion.descripcion] - Descripción detallada de la marca
+ * @property {boolean} is_active - Indica si la marca está activa
+ * @property {Date | string} created_at - Fecha de creación
+ * @property {Date | string} updated_at - Fecha de última actualización
+ */
+export interface Brand {
+  uuid: string
+  name: string
+  description?: string
+  informacion?: {
+    titulo?: string
+    url?: string
+    descripcion?: string
+  }
+  is_active: boolean
+  created_at: Date | string
+  updated_at: Date | string
+}
+
+/**
+ * Interfaz que representa una categoría de producto
+ * @property {string} uuid - Identificador único de la categoría
+ * @property {string} name - Nombre de la categoría
+ * @property {string} [description] - Descripción opcional de la categoría
+ * @property {string} [parent_id] - ID de la categoría padre (para jerarquías)
+ * @property {number} level - Nivel en la jerarquía de categorías
+ * @property {string} path - Ruta completa en la jerarquía
+ * @property {Object} [customization] - Personalización visual de la categoría
+ * @property {string} [customization.color] - Color asociado a la categoría
+ * @property {string} [customization.icon] - Ícono asociado a la categoría
+ * @property {string} [customization.image_url] - URL de la imagen de la categoría
+ * @property {boolean} is_active - Indica si la categoría está activa
+ * @property {Date | string} created_at - Fecha de creación
+ * @property {Date | string} updated_at - Fecha de última actualización
+ */
+export interface Category {
+  uuid: string
+  name: string
+  description?: string
+  parent_id?: string
+  level: number
+  path: string
+  customization?: {
+    color?: string
+    icon?: string
+    image_url?: string
+  }
+  is_active: boolean
+  created_at: Date | string
+  updated_at: Date | string
+}
+
+/**
+ * Interfaz que representa un código de barras
+ * @property {string} code - Código de barras
+ * @property {string} [variant] - Variante del producto (si aplica)
+ * @property {number} [value] - Valor asociado al código de barras (si aplica)
+ */
+interface Barcode {
+  code: string
+  variant?: string
+  value?: number
+}
+
+/**
+ * Interfaz que representa la configuración de inventario de un producto
+ * @property {number} current_stock - Cantidad actual en inventario
+ * @property {number} minimum_stock - Nivel mínimo de inventario
+ * @property {number} reorder_point - Punto de reorden
+ * @property {Object} preferred_order_unit - Unidad de medida preferida para pedidos
+ * @property {string} preferred_order_unit.type - Tipo de unidad (BASE, STACK, PACK)
+ * @property {number} preferred_order_unit.unit_measure_id - ID de la unidad de medida
+ * @property {string} preferred_order_unit.name - Nombre de la unidad de medida
+ * @property {number} preferred_order_unit.quantity - Cantidad en la unidad de medida
+ */
+interface InventoryConfig {
+  current_stock: number
+  minimum_stock: number
+  reorder_point: number
+  preferred_order_unit: {
+    type: 'BASE' | 'STACK' | 'PACK'
+    unit_measure_id: number
+    name: string
+    quantity: number
+  }
+}
+
+/**
+ * Interfaz que representa un producto en el sistema
+ * @property {string} uuid - Identificador único del producto
+ * @property {string} sku - Código SKU único del producto
+ * @property {string} name - Nombre del producto
+ * @property {string} [description] - Descripción del producto
+ * @property {'SIMPLE' | 'STACK' | 'PACK'} type - Tipo de producto
+ * @property {boolean} is_service - Indica si es un servicio
+ * @property {string} category_id - ID de la categoría a la que pertenece
+ * @property {string} [location_id] - ID de la ubicación física
+ * @property {Barcode[]} [barcodes] - Códigos de barras asociados
+ * @property {Object} base_unit - Unidad base del producto
+ * @property {number} base_unit.unit_measure_id - ID de la unidad de medida
+ * @property {string} base_unit.name - Nombre de la unidad de medida
+ * @property {Object} [stack_config] - Configuración para productos tipo STACK
+ * @property {boolean} [stack_config.is_stack] - Indica si es un stack
+ * @property {number} [stack_config.quantity] - Cantidad en el stack
+ * @property {number} [stack_config.unit_measure_id] - ID de la unidad de medida del stack
+ * @property {string} [stack_config.name] - Nombre del stack
+ * @property {string} [stack_config.base_product_uuid] - UUID del producto base
+ * @property {Object} [pack_config] - Configuración para productos tipo PACK
+ * @property {boolean} [pack_config.is_pack] - Indica si es un pack
+ * @property {string} [pack_config.name] - Nombre del pack
+ * @property {Array<{product_uuid: string, quantity: number, unit_measure_id: number}>} [pack_config.items] - Items del pack
+ * @property {InventoryConfig} inventory - Configuración de inventario
+ * @property {number} cost - Costo del producto
+ * @property {number} profit_margin - Margen de ganancia (porcentaje)
+ * @property {number} price - Precio de venta
+ * @property {number} [wholesale_price] - Precio al por mayor
+ * @property {string} [tax_rate] - Tasa de impuesto
+ * @property {number} is_excluded - Indica si está excluido de ciertos cálculos
+ * @property {Object} [customization] - Personalización del producto
+ * @property {string} [customization.color] - Color del producto
+ * @property {string} [customization.icon] - Ícono del producto
+ * @property {string} [customization.image_url] - URL de la imagen del producto
+ * @property {string} brand_id - ID de la marca del producto
+ * @property {boolean} is_active - Indica si el producto está activo
+ * @property {Date | string} created_at - Fecha de creación
+ * @property {Date | string} updated_at - Fecha de última actualización
+ */
+export interface Product {
+  uuid: string
+  sku: string
+  name: string
+  description?: string
+  type: 'SIMPLE' | 'STACK' | 'PACK'
+  is_service: boolean
+  category_id: string
+  location_id?: string
+  barcodes?: Barcode[]
+  base_unit: {
+    unit_measure_id: number
+    name: string
+  }
+  stack_config?: {
+    is_stack?: boolean
+    quantity?: number
+    unit_measure_id?: number
+    name?: string
+    base_product_uuid?: string
+  }
+  pack_config?: {
+    is_pack?: boolean
+    name?: string
+    items?: Array<{
+      product_uuid: string
+      quantity: number
+      unit_measure_id: number
+    }>
+  }
+  inventory: InventoryConfig
+  cost: number
+  profit_margin: number
+  price: number
+  wholesale_price?: number
+  tax_rate?: string
+  is_excluded: number
+  customization?: {
+    color?: string
+    icon?: string
+    image_url?: string
+  }
+  brand_id: string
+  is_active: boolean
+  created_at: Date | string
+  updated_at: Date | string
+}
+
+/**
+ * Interfaz para la respuesta de la API de productos
+ * @template T - Tipo de dato contenido en la respuesta
+ */
+export interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  message?: string
+  error?: string
+}
+
+/**
+ * Interfaz para la respuesta paginada de la API
+ * @template T - Tipo de los elementos en la lista
+ */
+export interface PaginatedResponse<T> {
+  data: T[]
+  pagination: {
+    total: number
+    page: number
+    limit: number
+    totalPages: number
+  }
+}
